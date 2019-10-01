@@ -70,7 +70,7 @@ Y como nota, por el extenso tamaño de los diagramas, decidimos no añadirlos a 
 \item La entidad SIM pasa como la relación \textbf{SIM} y todos sus atributos son los del E/R.
     \begin{itemize}
     \item \textit{ICCID}, que es número entero y por lo tanto es un integer. Y es la llave primaria de esta relación.
-    \item \textit{tipo_de_red} que es del tipo varchar pues hay tipos de red de nombres de diferente longitud 
+    \item \textit{tipo\_de\_red} que es del tipo varchar pues hay tipos de red de nombres de diferente longitud 
     \item \textit{asignada}, que es un booleano si nos dice si la SIM está sin asignar.
     \end{itemize}   
 \item Como la relación de herencia de la entidad Vehículo era total y exclusiva, no figura como relación, pero sí lo hacen todas las entodades que heredaban de ella: \textbf{Taxi, Microbus, Metrobus, Tren\_Ligero, Metro, RTP, Trolebus}. Todas tienen exactamente los mismos atributos (a excepción de Taxi, que tiene uno más):
@@ -94,7 +94,7 @@ Y como nota, por el extenso tamaño de los diagramas, decidimos no añadirlos a 
 \item La entidad Colectivo, que era la unión de los vehículos que no son taxi, pasa como la relación \textbf{Colectivo}, y sus atributos son:
     \begin{itemize}
     \item \textit{ID\_vehículo} que recibe como llave foránea de todos los vehículos de los que era unión y también funciona como su llave primaria
-    \item \textot{numero\_ruta y tipo\_transporte} que recibe como llaves foráneas de LineaRuta (pues su relación era N:1).
+    \item \textit{numero\_ruta y tipo\_transporte} que recibe como llaves foráneas de LineaRuta (pues su relación era N:1).
     \end{itemize}        
 \item La entidad Taller pasa como la relación \textbf{Taller} y de nuevo todos sus atributos son los del E/R, menos el atributo teléfono.
     \begin{itemize}
