@@ -1,0 +1,122 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{fullpage}
+\usepackage[top=2cm, bottom=4.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{hyperref}
+
+
+\pagestyle{fancyplain}
+\headheight 35pt
+\rhead{\today}
+\lhead{Fundamentos de Bases de Datos}
+\headsep 1.5em
+
+\begin{document}
+
+\begin{center}
+	\LARGE{\textbf{Práctica 05\\Reporte}}
+\end{center}
+
+\section*{Proceso de Conversión, Descripción y Restricciones del Modelo}
+Lo que haremos es describir cómo fuimos haciendo el proceso de traducción, y cuando mencionemos por qué creamos cada relación, cuyos nombres destacaremos en negritas, describiremos sus atributos (y sus restricciones de dominio) y cuáles son sus llaves primarias y foráneas.\par
+Y como nota, por el extenso tamaño de los diagramas, decidimos no añadirlos a este reporte, ya que no se logran apreciar bien. 
+\begin{itemize}
+\item Lo primero que vimos es que la entidad \textit{Empleado} del modelo E/R tiene que pasar como una relación por ser una entidad fuerte. La pasamos a la relación \textbf{Empleado}. Agregamos todos los atributos que aparecen en el diagrama E/R, que son:
+    \begin{itemize}
+    \item \textit{id\_empleado} que es de tipo varchar ya que pensamos que la longitid puede variar y puede incluir letras y números. Éste atributo es la llave primaria, pues identifica de manera única a cada empleado. 
+    \item \textit{nombre, apellido\_paterno, apellido\_materno} que son del tipo varchar pues no sabemos su longitud.
+    \item \textit{fecha\_de\_nacimiento}, que es del tipo date, ya que es una fecha y no queremos guardar la hora también.
+    \item \textit{grado\_maximo\_estudios} que será varchar para poder guardar a todas las distintas escolaridades.
+    \item \textit{genero} también es del tipo char(1), pues sólo tenemos que guardar m o f. 
+    \item \textit{horario}. Será de tipo char(11), ya que será de la forma hh:mm-hh:mm.
+    \item Todos los correspondientes a dirección. En general es obvio porqué deben ser varchar (todos excepto número, que debe ser int), a excepción del código postal. El C.P. también debe ser varchar pues tenemos de la forma 004502, lo cual no se representa bien con un entero. 
+    \item Por último, como su relación con Vehículo es 1:N, tiene que recibir el ID\_Vehículo, que funcionará como llave foránea. 
+    \end{itemize}
+\item. Luego, pasamos la entidad Examen\_Medico a una relación \textbf{Examen\_Medico}. Sus atributos son de nuevo casi los mismos que en el modelo E/R:
+    \begin{itemize}
+    \item \textit{id\_empleado}, que recibe como llave foránea de Empleado.
+    \item \textit{fecha} que guardará tanto la fecha como la hora, y por esto debe ser de tipo datetime. Junto con el id\_empleado forman la llave primaria de esta entidad (pues como era débil en el modelo E/R, necesita la llave de Empleado para identificarse).
+    \item \textit{cedula}, que como es una cédula profesional sabemos que tiene 8 caracteres, por lo que es de tipo char(8).
+    \item \textit{estatus} que como es un mensaje, será del tipo varchar
+    \item \textit{talla} que será un float, pues hay tallas como 9 y medio, etc.
+    \item \textit{peso} que será un float pues se puede pesar 63.800 kg por ejemplo.
+    \item \textit{presión} que será un varchar pues puede ser de la forma 120/100 o bien 100/80, etc. 
+    \end{itemize}
+\item La entidad Licencia también pasa como la relación \textbf{Licencia} y de nuevo casi todos sus atributos son los del E/R.
+    \begin{itemize}
+    \item \textit{id\_empleado}, que recibe como llave foránea de Empleado.
+    \item \textit{folio} que será de tipo varchar pues puede variar en la longitud. Este jdebe ser la llave primaria de la relación, pues aunque Licencia era entidad débil en el E/R, se puede indentificar únicamente por su folio y en el modelo relacional las llaves primarias deben ser únicas.
+    \item \textit{tipo}, que será de tipo char(1), pues los tipos son de la forma A, B, etc.
+    \item \textit{fecha\_de\_expedición} \textit{fecha\_de\_vencimiento} ambas del tipo date.
+    \end{itemize}   
+\item La siguiente que pasamos fue la entidad Usuario a la relación \textbf{Usuario}. Aquí no tuvimos que añadir ningún atributo que no estuviera en el E/R.
+    \begin{itemize}
+    \item \textit{user}, que es de tipo varchar pues varía su longitud y como era la llave en el modelo E/R, es la llave primaria en este. 
+    \item \textit{correo\_electonico} y \textit{password} Ambos deben ser del tipo varchar. 
+    \item Los atributos correspondientes a las partes del nombre son exactamente iguales que en Empleado. 
+    \item \textit{saldo}, que debe ser del tipo money, pues el saldo es dinero.
+    \item \textit{latitud} que es un decimal(2, 6), el 6 para la exactitud y el 2 porque las latitudes van de -90 a 90.
+    \item \textit{longitud} que es un decimal(3, 6), el 6 para la exactitud y el 3 porque las longitudes van de -180 a 180.
+    \end{itemize}   
+\item La entidad SIM pasa como la relación \textbf{SIM} y todos sus atributos son los del E/R.
+    \begin{itemize}
+    \item \textit{ICCID}, que es número entero y por lo tanto es un integer. Y es la llave primaria de esta relación.
+    \item \textit{tipo_de_red} que es del tipo varchar pues hay tipos de red de nombres de diferente longitud 
+    \item \textit{asignada}, que es un booleano si nos dice si la SIM está sin asignar.
+    \end{itemize}   
+\item Como la relación de herencia de la entidad Vehículo era total y exclusiva, no figura como relación, pero sí lo hacen todas las entodades que heredaban de ella: \textbf{Taxi, Microbus, Metrobus, Tren\_Ligero, Metro, RTP, Trolebus}. Todas tienen exactamente los mismos atributos (a excepción de Taxi, que tiene uno más):
+    \begin{itemize}
+    \item \textit{id\_vehiculo}, que es su llave primaria y es un varchar.
+    \item \textit{fecha\_de\_inicio} que será de tipo date.
+    \item \textit{capacidad\_pasajeros}, que será de tipo integer pues se tiene una capacidad para un número exacto de pasajeros.
+    \item \textit{tipo\_combustible} que es de tipo varchar pues diésel y regular no tienen la misma longitud, y tampoco otros tipos de combustible. 
+    \item \textit{latitud y longitud} son iguales que en usuario.
+    \item \textit{ICCID}, que recibe como llave foránea de su relación con SIM (la cual no tiene que pasar como relación ya que era 1:N).
+    \item \textit{fecha\_asignación\_SIM} que era un atributo de la relación y tiene que ser agregada a esta tabla, y es del tipo date.
+    \item Adicionalmente, Taxi tiene \textit{numero\_sitio}, atributo que recibe como llave foránea de su relación con Sitio. 
+    \end{itemize}   
+\item La entidad Sitio pasa como la relación \textbf{Sitio} y con exactamente los mismos atributos del E/R.
+    \begin{itemize}
+    \item \textit{numero\_de\_sitio}, un integer que sirve como llave primaria de la relación
+    \item \textit{nombre} que será de tipo varchar 
+    \item \textit{teléfono}, del tipo varchar (pues pueden ser de celular o con extensión).
+    \item \textit{latitud, longitud} y las correspondientes a la dirección, que tienen los mismos dominios que en las otras relaciones.
+    \end{itemize}   
+\item La entidad Colectivo, que era la unión de los vehículos que no son taxi, pasa como la relación \textbf{Colectivo}, y sus atributos son:
+    \begin{itemize}
+    \item \textit{ID\_vehículo} que recibe como llave foránea de todos los vehículos de los que era unión y también funciona como su llave primaria
+    \item \textot{numero\_ruta y tipo\_transporte} que recibe como llaves foráneas de LineaRuta (pues su relación era N:1).
+    \end{itemize}        
+\item La entidad Taller pasa como la relación \textbf{Taller} y de nuevo todos sus atributos son los del E/R, menos el atributo teléfono.
+    \begin{itemize}
+    \item \textit{id\_taller}, que es un varchar y será la llave primaria.
+    \item \textit{razon\_social} que será de tipo varchar
+    \item Las correspondientes a la dirección y horario, que son iguales que en otras relaciones.
+    \end{itemize}   
+\item El atributo teléfono de Taller tiene que pasar como una relación \textbf{Telefono\_taller} pues era multivaluado. Los únicos atributos que tiene son el id\_taller que recibe como llave foránea de Taller, y teléfono, que es de tipo varchar. Ambos como conjunto son la llave primaria de esta relación.
+\item La relación entre Taller y Vehículo tiene que pasar como una relación en este modelo pues era M:N. pasa como la relación \textbf{Reparación} %Agregar decripción de atributos
+\item La entidad LineaRuta pasa como la relación \textbf{LineaRuta} y de nuevo todos sus atributos son los del E/R.
+%Describir los atributos
+\item La entidad Estación pasa como la relación \textbf{Estacion} y de nuevo casi todos sus atributos son los del E/R.
+%describir atributos
+\item La relación entre Estacion y Usuario tiene que pasar como relación en este modelo pues era M:N. Pasa como la relación \textbf{Distancias}. %Describir atributos
+\item De igual manera, la relación entre Estación y LineaRuta pasa como \textbf{Pertenecer\_Ruta}. %Describir
+\item Y por último, la relación entre Taller y Vehículo pasa por las mismas razones como \textbf{Reparacion}. %Descibir
+\end{itemize}
+\pagebreak
+\section*{Bitácora}
+
+\subsection*{25 de Septiembre}
+
+Lo único que hubo que discutir fueron las pequeñas modificaciones que notamos que había que hacer al modelo y que no nos habíamos dado cuenta que serían necesarias. Nos dimos cuenta que nos había faltado marcado la llave de Estación, que era el nombre (El nombre funciona puesto que se considera que la misma estación puede pertenecer a distintas líneas, y en general, en la vida real, sólo se repiten nombres de estaciones cuando tenemos que son para transportes distintos en el mismo lugar). También nos dimos que ubicación era un atributo compuesto por latitud y longitud. Por último, nos dimos cuenta que nos había faltado cambiar la participación de la relación \textit{operar} a total de ambos lados, como habíamos puesto en nuestro reporte. Fuera de esto como lo único que hicimos fue seguir las reglas de traducción vistas en clase, no hubo que reunirse más. 
+
+\end{document}
