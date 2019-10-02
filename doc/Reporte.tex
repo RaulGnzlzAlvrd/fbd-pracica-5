@@ -78,7 +78,7 @@ Y como nota, por el extenso tamaño de los diagramas, decidimos no añadirlos a 
     \item \textit{id\_vehiculo}, que es su llave primaria y es un varchar.
     \item \textit{fecha\_de\_inicio} que será de tipo date.
     \item \textit{capacidad\_pasajeros}, que será de tipo integer pues se tiene una capacidad para un número exacto de pasajeros.
-    \item \textit{tipo\_combustible} que es de tipo varchar pues diésel y regular no tienen la misma longitud, y tampoco otros tipos de combustible. 
+    \item \textit{tipo\_combustible} que es de tipo varchar pues los tipos de combustible no tienen una longitud fija. 
     \item \textit{latitud y longitud} son iguales que en usuario.
     \item \textit{ICCID}, que recibe como llave foránea de su relación con SIM (la cual no tiene que pasar como relación ya que era 1:N).
     \item \textit{fecha\_asignación\_SIM} que era un atributo de la relación y tiene que ser agregada a esta tabla, y es del tipo date.
@@ -103,14 +103,33 @@ Y como nota, por el extenso tamaño de los diagramas, decidimos no añadirlos a 
     \item Las correspondientes a la dirección y horario, que son iguales que en otras relaciones.
     \end{itemize}   
 \item El atributo teléfono de Taller tiene que pasar como una relación \textbf{Telefono\_taller} pues era multivaluado. Los únicos atributos que tiene son el id\_taller que recibe como llave foránea de Taller, y teléfono, que es de tipo varchar. Ambos como conjunto son la llave primaria de esta relación.
-\item La relación entre Taller y Vehículo tiene que pasar como una relación en este modelo pues era M:N. pasa como la relación \textbf{Reparación} %Agregar decripción de atributos
-\item La entidad LineaRuta pasa como la relación \textbf{LineaRuta} y de nuevo todos sus atributos son los del E/R.
-%Describir los atributos
+\item La relación entre Taller y Vehículo tiene que pasar como una relación en este modelo pues era M:N. pasa como la relación \textbf{Reparación}, cuyos atributos están dados por:
+    \begin{itemize}
+        \item \textit{ID\_Vehiculo y ID\_Taller}, ambas recibidas como llaves foráneas, de Vehículo y Taller, respectivamente. En conjunto deben funcionar como llave primaria para esta relación.
+        \item \textit{ingreso} y \textit{salida}, que representan las fechas de ingreso y salida (respectivamente) del vehículo al taller y, por lo tanto, debe ser del tipo date.
+        \item \textit{motivo} que es una descripción de porqué se mandó el vehículo al taller, y como no tiene longitud fija debe ser del tipo varchar.
+    \end{itemize}
+\item La entidad LineaRuta pasa como la relación \textbf{LineaRuta} y de nuevo todos sus atributos son los del E/R:
+    \begin{itemize}
+        \item \textit{numero\_ruta} que es el número de la ruta, y por lo tanto es un integer.
+        \item \textit{tipo\_transporte} que debe ser del tipo varchar. En conjunto con el número de ruta forman la llave primaria de la ruta.
+    \end{itemize}
 \item La entidad Estación pasa como la relación \textbf{Estacion} y de nuevo casi todos sus atributos son los del E/R.
-%describir atributos
-\item La relación entre Estacion y Usuario tiene que pasar como relación en este modelo pues era M:N. Pasa como la relación \textbf{Distancias}. %Describir atributos
-\item De igual manera, la relación entre Estación y LineaRuta pasa como \textbf{Pertenecer\_Ruta}. %Describir
-\item Y por último, la relación entre Taller y Vehículo pasa por las mismas razones como \textbf{Reparacion}. %Descibir
+    \begin{itemize}
+        \item \textit{nombre\_estacion} que debe ser de tipo varchar y es la llave primaria de la estación, ya que como permitimos que la misma estación pertenezca a varias rutas, y si dos estaciones están en lugares diferentes no tienen el mismo nombre, entonces identifica de manera única a cada estación.
+        \item \textit{horario}, que como se explicó para empleado debe ser del tipo char(11)
+        \item \textit{accesibilidad} que debe ser de tipo varchar.
+        \item Los mismos atributos relacionados con la ubicación ya discutidos para otras relaciones.
+        \item Los mismos atributos que corresponden a las partes de la dirección, ya discutidas para otras relaciones.
+    \end{itemize}
+\item La relación entre Estacion y Usuario tiene que pasar como relación en este modelo pues era M:N. Pasa como la relación \textbf{Distancias}. Sólo tiene dos atributos, que pasan como llaves foráneas, \textit{user} de Usuario y \textit{nombre\_estacion} que pasa de Estación. En conjunto forman la llave primaria. La distancia es un atributo derivado que se calcula con las ubicaciones del usuario y de la Estación correspondientes a cada tupla de la relación.
+\item Por la misma razón (era relación M:N), la relación entre Estación y LineaRuta pasa como \textbf{Pertenecer\_Ruta}. Sus atributos son:
+    \begin{itemize}
+        \item Los atributos \textit{nombre\_estacion, numero\_ruta} y \textit{tipo\_transporte} que pasan como llaves foráneas, la primera de Estación y las segundas de Linea/Ruta. Las tres en conjunto forman la llave primaria de esta relación.
+        \item \textit{disponible} un boolean que nos dice si la estación en una línea correspondiente está disponible en el momento o no.
+        \item \textit{razon} una descripción de porqué no está disponible, y por tanto debe ser del tipo varchar. (En caso de que la estación sí esté disponible tendrá el valor NULL)
+        \item \textit{fecha\_disponible} que nos dice cuándo volverá a operar la estación, y que deberá ser un datetime pues necesitaremos la fecha y la hora de reapertura de la estación. También sera NULL si la estación sí está disponible.
+    \end{itemize}
 \end{itemize}
 \pagebreak
 \section*{Bitácora}
